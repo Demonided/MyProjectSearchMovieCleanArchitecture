@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyProjectSearchMovieCleanArchitecture</string>
+    <string name="nothing_found">Nothing_Nite</string>
+    <string name="something_went_wrong">XxXxX</string>
+</resources>
