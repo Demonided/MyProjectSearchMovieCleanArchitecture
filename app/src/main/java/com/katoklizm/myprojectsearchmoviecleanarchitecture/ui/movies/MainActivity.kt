@@ -17,6 +17,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MoviesSearchResponse
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.network.IMDbApiService
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.network.MoviesRepositoryImpl
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.network.RetrofitNetworkClient
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesInteractor
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesRepository
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.impl.MoviesInteractorImpl
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.poster.PosterActivity
 import retrofit2.Call
@@ -26,6 +31,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
+
+    object Creator {
+        private fun getMoviesRepository(): MoviesRepository {
+            return MoviesRepositoryImpl(RetrofitNetworkClient())
+        }
+
+        fun provideMoviesInteractor(): MoviesInteractor {
+            return MoviesInteractorImpl(getMoviesRepository())
+        }
+    }
 
     private val imdbBaseUrl = "https://imdb-api.com"
 
@@ -84,7 +99,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun afterTextChanged(p0: Editable?) {
             }
-
         })
     }
 
@@ -110,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                         movies.clear()
                         if (response.body()?.results?.isNotEmpty() == true) {
                             moviesList.visibility = View.VISIBLE
-                            movies.addAll(response.body()?.results!!)
+//                            movies.addAll(response?.body()?.results!!)
                             adapter.notifyDataSetChanged()
                         }
                         if (movies.isEmpty()) {
