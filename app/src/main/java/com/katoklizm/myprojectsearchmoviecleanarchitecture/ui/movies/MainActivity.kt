@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private val imdbBaseUrl = "https://imdb-api.com"
 
     companion object {
