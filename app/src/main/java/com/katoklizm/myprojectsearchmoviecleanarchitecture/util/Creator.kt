@@ -9,6 +9,8 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesRepo
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.impl.MoviesInteractorImpl
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesSearchPresenter
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.PosterController
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.PosterPresenter
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.PosterView
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesView
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.MoviesAdapter
 
@@ -22,18 +24,17 @@ object Creator {
     }
 
     fun provideMoviesSearchPresenter(
-        moviesView: MoviesView,
         context: Context,
-        adapter: MoviesAdapter
     ): MoviesSearchPresenter {
         return MoviesSearchPresenter(
-            view = moviesView,
             context = context,
-            adapter = adapter
         )
     }
 
-    fun providePosterController(activity: Activity): PosterController {
-        return PosterController(activity)
+    fun providePosterPresenter(
+        posterView: PosterView,
+        imageUrl: String
+    ): PosterPresenter {
+        return PosterPresenter(posterView, imageUrl)
     }
 }

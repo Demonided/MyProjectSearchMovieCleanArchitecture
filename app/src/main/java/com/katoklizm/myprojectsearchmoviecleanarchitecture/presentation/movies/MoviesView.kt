@@ -1,12 +1,16 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies
 
-interface MoviesView {
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.models.MoviesState
+import moxy.MvpView
+import moxy.viewstate.strategy.AddToEndSingleStrategy
+import moxy.viewstate.strategy.OneExecutionStateStrategy
+import moxy.viewstate.strategy.StateStrategyType
 
-    fun showPlaceholderMessage(isVisible: Boolean)
+interface MoviesView: MvpView {
 
-    fun showMoviesList(isVisible: Boolean)
+    @StateStrategyType(AddToEndSingleStrategy::class)
+    fun render(state: MoviesState)
 
-    fun showProgressBar(isVisible: Boolean)
-
-    fun changePlaceholderText(newPlaceholderText: String)
+    @StateStrategyType(OneExecutionStateStrategy::class)
+    fun showToast(message: String)
 }
