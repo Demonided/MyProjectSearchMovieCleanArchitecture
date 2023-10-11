@@ -1,11 +1,9 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -13,18 +11,20 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.MoviesApplication
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesSearchPresenter
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesView
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesSearchViewModel
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.ToastState
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.models.MoviesState
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.Creator
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.poster.PosterActivity
 
-class MainActivity : AppCompatActivity(), MoviesView {
+class MainActivity : ComponentActivity() {
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity(), MoviesView {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private var moviesSearchPresenter: MoviesSearchPresenter? = null
+    private lateinit var viewModel: MoviesSearchViewModel
 
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
@@ -54,6 +54,10 @@ class MainActivity : AppCompatActivity(), MoviesView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        viewModel = ViewModelProvider(
+            this,
+            MoviesSearchViewModel.getViewModelFactory()
+        )[MoviesSearchViewModel::class.java]
 
         // Кусочек кода, который был в Presenter
         placeholderMessage = findViewById(R.id.placeholderMessage)
@@ -64,21 +68,12 @@ class MainActivity : AppCompatActivity(), MoviesView {
         moviesList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         moviesList.adapter = adapter
 
-        moviesSearchPresenter = (this.applicationContext as? MoviesApplication)?.moviesSearchPresenter
-
-        if (moviesSearchPresenter == null) {
-            moviesSearchPresenter = Creator.provideMoviesSearchPresenter(
-                context = this.applicationContext
-            )
-            (this.applicationContext as? MoviesApplication)?.moviesSearchPresenter = moviesSearchPresenter
-        }
-
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                moviesSearchPresenter?.searchDebounce(
+                viewModel?.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
             }
@@ -87,39 +82,28 @@ class MainActivity : AppCompatActivity(), MoviesView {
             }
         }
         textWatcher?.let { queryInput.addTextChangedListener(it) }
-    }
 
-    override fun onStart() {
-        super.onStart()
-        moviesSearchPresenter?.attachView(this)
-    }
+        viewModel.observeState.observe(this) { moviesState ->
+            render(moviesState)
+        }
 
-    override fun onResume() {
-        super.onResume()
-        moviesSearchPresenter?.attachView(this)
-    }
+        viewModel.observeToastState.observe(this) { toastState ->
+            if (toastState is ToastState.Show) {
+                showToast(toastState.additionalMessage)
+                viewModel.toastWasShown()
+            }
+        }
 
-    override fun onPause() {
-        super.onPause()
-        moviesSearchPresenter?.detachView()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        moviesSearchPresenter?.detachView()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        moviesSearchPresenter?.detachView()
+        viewModel.observeShowToast().observe(this) { toast ->
+            showToast(toast)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
-        textWatcher?.let { queryInput.removeTextChangedListener(it) }
-        moviesSearchPresenter?.detachView()
-        moviesSearchPresenter?.onDestroy()
+        textWatcher?.let {
+            queryInput.removeTextChangedListener(it)
+        }
     }
 
     private fun clickDebounce(): Boolean {
@@ -131,8 +115,8 @@ class MainActivity : AppCompatActivity(), MoviesView {
         return current
     }
 
-    override fun render(state: MoviesState) {
-        when(state) {
+    fun render(state: MoviesState) {
+        when (state) {
             is MoviesState.Loading -> showLoading()
             is MoviesState.Content -> showContent(state.movies)
             is MoviesState.Error -> showError(state.errorMessage)
@@ -168,7 +152,7 @@ class MainActivity : AppCompatActivity(), MoviesView {
         adapter.notifyDataSetChanged()
     }
 
-    override fun showToast(additionalMessage: String) {
-        Toast.makeText(applicationContext, additionalMessage, Toast.LENGTH_LONG).show()
+    private fun showToast(additionalMessage: String) {
+        Toast.makeText(this, additionalMessage, Toast.LENGTH_LONG).show()
     }
 }
