@@ -61,6 +61,8 @@ class MoviesSearchViewModel(
         }
     }
 
+    fun observeState(): LiveData<MoviesState> = mediatorStateLiveData
+
     private var lastSearchText: String? = null
 
     private val handler = Handler(Looper.getMainLooper())
@@ -74,7 +76,7 @@ class MoviesSearchViewModel(
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
-    fun observeState(): LiveData<MoviesState> = mediatorStateLiveData
+
 
     fun toggleFavorite(movie: Movie) {
         if (movie.inFavorite) {

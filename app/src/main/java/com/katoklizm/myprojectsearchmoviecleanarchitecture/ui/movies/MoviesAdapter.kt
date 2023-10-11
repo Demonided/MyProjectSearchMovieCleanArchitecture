@@ -14,6 +14,7 @@ class MoviesAdapter(private val clickListener: MovieClickListener) :
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         holder.bind(movies.get(position))
+
 //        holder.itemView.setOnClickListener { clickListener.onMovieClick(movies.get(position)) }
     }
 

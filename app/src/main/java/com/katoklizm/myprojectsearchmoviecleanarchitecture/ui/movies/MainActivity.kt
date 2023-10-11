@@ -93,10 +93,9 @@ class MainActivity : ComponentActivity() {
         }
         textWatcher?.let { queryInput.addTextChangedListener(it) }
 
-
-//        viewModel.observeState.observe(this) { moviesState ->
-//            render(moviesState)
-//        }
+        viewModel.observeState.observe(this) { moviesState ->
+            render(moviesState)
+        }
 
         viewModel.observeToastState.observe(this) { toastState ->
             if (toastState is ToastState.Show) {
@@ -113,9 +112,9 @@ class MainActivity : ComponentActivity() {
          * Крайний метод из теории в MoviesSearchViewModel
          * который почему-то решили не расказывать как должен реализовываться
          */
-        viewModel.observeState.observe(this) {
-            render(it)
-        }
+//        viewModel.observeState().observe(this) {
+//
+//        }
     }
 
     override fun onDestroy() {

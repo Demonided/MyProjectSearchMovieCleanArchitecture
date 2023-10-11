@@ -34,6 +34,8 @@ class MovieViewHolder(
         title.text = movie.title
         description.text = movie.description
 
+
+
         inFavoriteToggle.setImageDrawable(getFavoriteToggleDrawable(movie.inFavorite))
 
         itemView.setOnClickListener { clickListener.onMovieClick(movie = movie) }
