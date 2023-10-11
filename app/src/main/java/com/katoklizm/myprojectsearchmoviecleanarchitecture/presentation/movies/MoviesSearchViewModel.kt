@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -47,6 +48,19 @@ class MoviesSearchViewModel(
         }
     }
 
+    private val mediatorStateLiveData = MediatorLiveData<MoviesState>().also { liveData ->
+        // 1
+        liveData.addSource(stateLiveData) { movieState ->
+            liveData.value = when (movieState) {
+                // 2
+                is MoviesState.Content -> MoviesState.Content(movieState.movies.sortedByDescending { it.inFavorite })
+                is MoviesState.Empty -> movieState
+                is MoviesState.Error -> movieState
+                is MoviesState.Loading -> movieState
+            }
+        }
+    }
+
     private var lastSearchText: String? = null
 
     private val handler = Handler(Looper.getMainLooper())
@@ -58,6 +72,35 @@ class MoviesSearchViewModel(
 
     override fun onCleared() {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+    }
+
+    fun observeState(): LiveData<MoviesState> = mediatorStateLiveData
+
+    fun toggleFavorite(movie: Movie) {
+        if (movie.inFavorite) {
+            moviesInteractor.removeMovieFromFavorites(movie = movie)
+        } else {
+            moviesInteractor.addMovieToFavorites(movie = movie)
+        }
+
+        updateMoviesContent(movie.id, movie.copy(inFavorite = !movie.inFavorite))
+    }
+
+    private fun updateMoviesContent(movieId: String, newMovie: Movie) {
+        val currentState = stateLiveData.value
+
+        if (currentState is MoviesState.Content) {
+
+            val movieIndex = currentState.movies.indexOfFirst { it.id == movieId }
+
+            if (movieIndex != -1) {
+                stateLiveData.value = MoviesState.Content(
+                    currentState.movies.toMutableList().also {
+                        it[movieIndex] = newMovie
+                    }
+                )
+            }
+        }
     }
 
     fun searchDebounce(changedText: String) {

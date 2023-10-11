@@ -19,7 +19,8 @@
     <ImageView
         android:id="@+id/favorite"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
         />
 
     <FrameLayout android:layout_width="match_parent"

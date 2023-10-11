@@ -30,13 +30,23 @@ class MainActivity : ComponentActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private val adapter = MoviesAdapter {
-        if (clickDebounce()) {
-            val intent = Intent(this, PosterActivity::class.java)
-            intent.putExtra("poster", it.image)
-            startActivity(intent)
+    private val adapter = MoviesAdapter(
+        object : MoviesAdapter.MovieClickListener{
+            override fun onMovieClick(movie: Movie) {
+                if (clickDebounce()) {
+                    val intent = Intent(this@MainActivity, PosterActivity::class.java)
+                    intent.putExtra("poster", movie.image)
+                    startActivity(intent)
+                }
+            }
+
+            override fun onFavoriteToggleClick(movie: Movie) {
+                viewModel.toggleFavorite(movie)
+            }
+
         }
-    }
+    )
+
 
     private var isClickAllowed = true
 
@@ -83,9 +93,10 @@ class MainActivity : ComponentActivity() {
         }
         textWatcher?.let { queryInput.addTextChangedListener(it) }
 
-        viewModel.observeState.observe(this) { moviesState ->
-            render(moviesState)
-        }
+
+//        viewModel.observeState.observe(this) { moviesState ->
+//            render(moviesState)
+//        }
 
         viewModel.observeToastState.observe(this) { toastState ->
             if (toastState is ToastState.Show) {
@@ -96,6 +107,14 @@ class MainActivity : ComponentActivity() {
 
         viewModel.observeShowToast().observe(this) { toast ->
             showToast(toast)
+        }
+
+        /**
+         * Крайний метод из теории в MoviesSearchViewModel
+         * который почему-то решили не расказывать как должен реализовываться
+         */
+        viewModel.observeState.observe(this) {
+            render(it)
         }
     }
 

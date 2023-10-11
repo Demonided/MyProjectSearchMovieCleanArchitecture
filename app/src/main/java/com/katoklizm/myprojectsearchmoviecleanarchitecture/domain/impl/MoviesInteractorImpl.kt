@@ -2,6 +2,7 @@ package com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.impl
 
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesInteractor
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesRepository
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.Resource
 import java.util.concurrent.Executors
 
@@ -16,6 +17,14 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
                 is Resource.Error -> { consumer.consume(null, resource.message) }
             }
         }
+    }
+
+    override fun addMovieToFavorites(movie: Movie) {
+        repository.addMovieToFavorites(movie = movie)
+    }
+
+    override fun removeMovieFromFavorites(movie: Movie) {
+        repository.removeMovieFromFavorites(movie = movie)
     }
 
 //    override fun searchMovies(expression: String, consumer: MoviesInteractor.MoviesConsumer) {
