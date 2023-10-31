@@ -1,6 +1,5 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies
 
-import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -12,25 +11,16 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.dataModule
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.interactorModule
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.repositoryModule
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.viewModelModule
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.PosterViewModel
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesSearchViewModel
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.ToastState
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.models.MoviesState
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.poster.PosterActivity
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.startKoin
 
 class MainActivity : AppCompatActivity() {
     private val viewModel by viewModel<MoviesSearchViewModel>()
