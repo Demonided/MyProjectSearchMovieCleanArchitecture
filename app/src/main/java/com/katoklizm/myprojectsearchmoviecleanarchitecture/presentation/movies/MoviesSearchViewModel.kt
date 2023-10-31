@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Looper
 import android.os.Handler
 import android.os.SystemClock
+import androidx.core.content.res.TypedArrayUtils.getString
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -14,14 +15,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.Creator
+//import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.Creator
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesInteractor
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.models.MoviesState
 
 class MoviesSearchViewModel(
-    application: Application
-) : AndroidViewModel(application) {
+    private val moviesInteractor: MoviesInteractor
+) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<MoviesState>()
     val observeState: LiveData<MoviesState> = stateLiveData
@@ -35,17 +36,17 @@ class MoviesSearchViewModel(
     private var state: MoviesState? = null
     private var latestSearchText: String? = null
 
-    private val moviesInteractor = Creator.provideMoviesInteractor(getApplication<Application>())
+//    private val moviesInteractor = Creator.provideMoviesInteractor(getApplication<Application>())
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
 
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                MoviesSearchViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
-            }
-        }
+//        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
+//            initializer {
+//                MoviesSearchViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
+//            }
+//        }
     }
 
     private val mediatorStateLiveData = MediatorLiveData<MoviesState>().also { liveData ->
@@ -75,8 +76,6 @@ class MoviesSearchViewModel(
     override fun onCleared() {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
-
-
 
     fun toggleFavorite(movie: Movie) {
         if (movie.inFavorite) {
@@ -143,18 +142,20 @@ class MoviesSearchViewModel(
                             errorMessage != null -> {
                                 renderState(
                                     MoviesState.Error(
-                                        errorMessage = getApplication<Application>().getString(R.string.something_went_wrong),
-                                    )
+                                        errorMessage = "dddd"
+                                    ),
                                 )
+
                                 view?.showToast(errorMessage)
                             }
 
                             movies.isEmpty() -> {
                                 renderState(
                                     MoviesState.Empty(
-                                        message = getApplication<Application>().getString(R.string.nothing_found),
-                                    )
+                                        message = "ssss"
+                                    ),
                                 )
+
                             }
 
                             else -> {

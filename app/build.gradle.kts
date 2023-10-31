@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.katoklizm.myprojectsearchmoviecleanarchitecture"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.katoklizm.myprojectsearchmoviecleanarchitecture"
@@ -38,6 +38,7 @@ android {
 
 dependencies {
     val moxyVersion = ("2.2.2")
+    implementation ("io.insert-koin:koin-android:3.3.0")
 
     implementation ("com.github.moxy-community:moxy:$moxyVersion")
     implementation ("com.github.moxy-community:moxy-android:$moxyVersion")

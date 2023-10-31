@@ -1,5 +1,6 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -12,20 +13,27 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.MoviesApplication
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.dataModule
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.interactorModule
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.repositoryModule
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.viewModelModule
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.PosterViewModel
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesSearchViewModel
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.ToastState
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.models.MoviesState
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.Creator
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.poster.PosterActivity
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.context.startKoin
 
-class MainActivity : ComponentActivity() {
-
+class MainActivity : AppCompatActivity() {
+    private val viewModel by viewModel<MoviesSearchViewModel>()
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
@@ -43,7 +51,6 @@ class MainActivity : ComponentActivity() {
             override fun onFavoriteToggleClick(movie: Movie) {
                 viewModel.toggleFavorite(movie)
             }
-
         }
     )
 
@@ -52,7 +59,7 @@ class MainActivity : ComponentActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private lateinit var viewModel: MoviesSearchViewModel
+//    private lateinit var viewModel: MoviesSearchViewModel
 
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
@@ -64,10 +71,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProvider(
-            this,
-            MoviesSearchViewModel.getViewModelFactory()
-        )[MoviesSearchViewModel::class.java]
+
+
+//        viewModel = ViewModelProvider(
+//            this,
+//            MoviesSearchViewModel.getViewModelFactory()
+//        )[MoviesSearchViewModel::class.java]
 
         // Кусочек кода, который был в Presenter
         placeholderMessage = findViewById(R.id.placeholderMessage)
@@ -83,7 +92,7 @@ class MainActivity : ComponentActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel?.searchDebounce(
+                viewModel.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
             }
@@ -91,6 +100,7 @@ class MainActivity : ComponentActivity() {
             override fun afterTextChanged(s: Editable?) {
             }
         }
+
         textWatcher?.let { queryInput.addTextChangedListener(it) }
 
         viewModel.observeState.observe(this) { moviesState ->
@@ -113,8 +123,9 @@ class MainActivity : ComponentActivity() {
          * который почему-то решили не расказывать как должен реализовываться
          */
 //        viewModel.observeState().observe(this) {
-//
 //        }
+
+
     }
 
     override fun onDestroy() {

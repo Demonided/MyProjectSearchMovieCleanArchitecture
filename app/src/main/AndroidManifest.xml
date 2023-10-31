@@ -20,7 +20,7 @@
             android:name=".ui.poster.PosterActivity"
             android:exported="false" />
         <activity
-            android:screenOrientation="fullSensor"
+
             android:name=".ui.movies.MainActivity"
             android:exported="true">
             <intent-filter>

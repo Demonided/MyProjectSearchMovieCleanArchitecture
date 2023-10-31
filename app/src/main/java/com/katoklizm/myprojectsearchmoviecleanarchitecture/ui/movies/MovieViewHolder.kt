@@ -36,11 +36,11 @@ class MovieViewHolder(
 
 
 
-        inFavoriteToggle.setImageDrawable(getFavoriteToggleDrawable(movie.inFavorite))
-
-        itemView.setOnClickListener { clickListener.onMovieClick(movie = movie) }
-
-        inFavoriteToggle.setOnClickListener { clickListener.onFavoriteToggleClick(movie) }
+//        inFavoriteToggle.setImageDrawable(getFavoriteToggleDrawable(movie.inFavorite))
+//
+//        itemView.setOnClickListener { clickListener.onMovieClick(movie = movie) }
+//
+//        inFavoriteToggle.setOnClickListener { clickListener.onFavoriteToggleClick(movie) }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
