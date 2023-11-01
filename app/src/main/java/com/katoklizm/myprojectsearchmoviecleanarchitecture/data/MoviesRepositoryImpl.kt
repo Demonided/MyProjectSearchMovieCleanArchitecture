@@ -1,10 +1,13 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.data
 
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieDetailsRequest
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieDetailsResponse
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MoviesSearchRequest
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MoviesSearchResponse
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.movie.LocalStorage
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesRepository
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieDetails
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.Resource
 
 class MoviesRepositoryImpl(
@@ -33,6 +36,25 @@ class MoviesRepositoryImpl(
             }
             else -> {
                 Resource.Error("Серверная ошибка")
+            }
+        }
+    }
+
+    override fun getMovieDetails(movieId: String): Resource<MovieDetails> {
+        val response = networkClient.doRequest(MovieDetailsRequest(movieId))
+        return when (response.resultCode) {
+            -1 -> {
+                Resource.Error("Проверьте подключение к интернету")
+            }
+            200 -> {
+                with(response as MovieDetailsResponse) {
+                    Resource.Success(MovieDetails(id, title, imDbRating, year,
+                        countries, genres, directors, writers, stars, plot))
+                }
+            }
+            else -> {
+                Resource.Error("Ошибка сервера")
+
             }
         }
     }

@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -19,7 +20,7 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesSearchViewModel
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.ToastState
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.models.MoviesState
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.poster.PosterActivity
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.poster.DetailsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -32,8 +33,10 @@ class MainActivity : AppCompatActivity() {
         object : MoviesAdapter.MovieClickListener{
             override fun onMovieClick(movie: Movie) {
                 if (clickDebounce()) {
-                    val intent = Intent(this@MainActivity, PosterActivity::class.java)
+                    val intent = Intent(this@MainActivity, DetailsActivity::class.java)
                     intent.putExtra("poster", movie.image)
+                    intent.putExtra("id", movie.id)
+                    Log.d("MovieId", "Такой Id: ${movie.id}")
                     startActivity(intent)
                 }
             }
