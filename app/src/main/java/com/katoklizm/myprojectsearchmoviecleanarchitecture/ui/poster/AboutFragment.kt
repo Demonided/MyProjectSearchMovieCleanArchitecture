@@ -7,21 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.databinding.FragmentAboutBinding
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieDetails
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.AboutState
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster.AboutState
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.cast.MoviesCastActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class AboutFragment: Fragment() {
-
-    companion object {
-        private const val MOVIE_ID = "movie_id"
-
-        fun newInstance(movieId: String) = AboutFragment().apply {
-            arguments = Bundle().apply {
-                putString(MOVIE_ID, movieId)
-            }
-        }
-    }
 
     private val aboutViewModel: AboutViewModel by viewModel {
         parametersOf(requireArguments().getString(MOVIE_ID))
@@ -43,6 +34,15 @@ class AboutFragment: Fragment() {
                 is AboutState.Content -> showDetails(it.movie)
                 is AboutState.Error -> showErrorMessage(it.message)
             }
+        }
+
+        binding.showCastButton.setOnClickListener {
+            startActivity(
+                MoviesCastActivity.newInstance(
+                    context = requireContext(),
+                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
+                )
+            )
         }
     }
 
@@ -68,6 +68,15 @@ class AboutFragment: Fragment() {
             castValue.text = movieDetails.stars
             plot.text = movieDetails.plot
         }
+    }
 
+    companion object {
+        private const val MOVIE_ID = "movie_id"
+
+        fun newInstance(movieId: String) = AboutFragment().apply {
+            arguments = Bundle().apply {
+                putString(MOVIE_ID, movieId)
+            }
+        }
     }
 }

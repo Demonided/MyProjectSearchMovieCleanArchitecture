@@ -1,4 +1,4 @@
-package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation
+package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

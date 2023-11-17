@@ -1,5 +1,8 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.data
 
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.converter.MovieCastConverter
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieCastRequet
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieCastResponse
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieDetailsRequest
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieDetailsResponse
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MoviesSearchRequest
@@ -7,12 +10,15 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MoviesSearch
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.movie.LocalStorage
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesRepository
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieCast
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieCastPerson
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieDetails
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.Resource
 
 class MoviesRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val localStorage: LocalStorage
+    private val localStorage: LocalStorage,
+    private val movieCastConverter: MovieCastConverter,
 ) : MoviesRepository {
 
     override fun searchMovies(expression: String): Resource<List<Movie>> {
@@ -48,7 +54,7 @@ class MoviesRepositoryImpl(
             }
             200 -> {
                 with(response as MovieDetailsResponse) {
-                    Resource.Success(MovieDetails(id, title, imDbRating, year,
+                    Resource.Success(MovieDetails(id, title, imDbRating ?: "", year,
                         countries, genres, directors, writers, stars, plot))
                 }
             }
@@ -56,6 +62,24 @@ class MoviesRepositoryImpl(
                 Resource.Error("Ошибка сервера")
 
             }
+        }
+    }
+
+    override fun getMovieCast(movieId: String): Resource<MovieCast> {
+        val response = networkClient.doRequest(MovieCastRequet(movieId))
+        return when (response.resultCode) {
+            -1 -> {
+                Resource.Error("Проверить подключение к интернету")
+            }
+            200 -> {
+                    Resource.Success(
+                        data = movieCastConverter.convert(response as MovieCastResponse)
+                    )
+            }
+            else -> {
+                Resource.Error("Ошибка сервера")
+            }
+
         }
     }
 

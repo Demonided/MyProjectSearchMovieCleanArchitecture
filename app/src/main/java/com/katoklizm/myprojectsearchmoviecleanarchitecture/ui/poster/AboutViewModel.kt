@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesInteractor
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieDetails
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.AboutState
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster.AboutState
 
 class AboutViewModel(
     private val movieId: String,

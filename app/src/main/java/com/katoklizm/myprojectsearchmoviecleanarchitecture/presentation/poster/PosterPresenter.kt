@@ -1,4 +1,4 @@
-package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation
+package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster
 
 class PosterPresenter(
     private val view: PosterView,

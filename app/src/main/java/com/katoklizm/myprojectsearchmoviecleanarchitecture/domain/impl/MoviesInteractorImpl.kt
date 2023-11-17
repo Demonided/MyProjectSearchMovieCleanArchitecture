@@ -31,6 +31,16 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
         }
     }
 
+    override fun getMovieCast(movieId: String, consumer: MoviesInteractor.MovieCastConsumer) {
+        executor.execute {
+            // Просто вызываем нужный метод Repository
+            when(val resource = repository.getMovieCast(movieId)) {
+                is Resource.Success -> { consumer.consume(resource.data, null) }
+                is Resource.Error -> { consumer.consume(resource.data, resource.message) }
+            }
+        }
+    }
+
     override fun addMovieToFavorites(movie: Movie) {
         repository.addMovieToFavorites(movie = movie)
     }
@@ -38,11 +48,4 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
     override fun removeMovieFromFavorites(movie: Movie) {
         repository.removeMovieFromFavorites(movie = movie)
     }
-
-//    override fun searchMovies(expression: String, consumer: MoviesInteractor.MoviesConsumer) {
-//        val t = Thread {
-//            consumer.consume(repository.searchMovies(expression))
-//        }
-//        t.start()
-//    }
 }

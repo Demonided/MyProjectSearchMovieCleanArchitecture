@@ -1,5 +1,6 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.data.network
 
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieCastResponse
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieDetailsResponse
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MoviesSearchResponse
 import retrofit2.Call
@@ -12,4 +13,7 @@ interface IMDbApiService {
 
     @GET("/en/API/Title/k_zcuw1ytf/{movie_id}")
     fun getMovieDetails(@Path("movie_id") movieId: String): Call<MovieDetailsResponse>
+
+    @GET("/en/API/FullCast/k_zcuw1ytf/{movie_id}")
+    fun getFullCast(@Path("movie_id") movieId: String): Call<MovieCastResponse>
 }

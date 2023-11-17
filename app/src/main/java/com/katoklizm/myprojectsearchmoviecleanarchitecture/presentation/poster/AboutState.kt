@@ -1,4 +1,4 @@
-package com.katoklizm.myprojectsearchmoviecleanarchitecture.util
+package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster
 
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieDetails
 

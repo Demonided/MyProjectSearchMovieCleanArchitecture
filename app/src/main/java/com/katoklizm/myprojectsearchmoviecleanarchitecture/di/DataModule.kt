@@ -6,6 +6,7 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.NetworkClient
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.movie.LocalStorage
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.network.IMDbApiService
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.network.RetrofitNetworkClient
+import okhttp3.OkHttpClient
 //import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.SearchHistoryStorage
 //import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.local.SharedPreferencesSearchHistoryStorage
 import org.koin.android.ext.koin.androidContext
