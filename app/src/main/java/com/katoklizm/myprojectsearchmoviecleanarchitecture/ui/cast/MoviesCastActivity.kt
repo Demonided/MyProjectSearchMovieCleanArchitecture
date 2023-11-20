@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.databinding.ActivityMoviesCastBinding
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.cast.MoviesCastState
@@ -21,7 +22,10 @@ class MoviesCastActivity : AppCompatActivity() {
         parametersOf(intent.getStringExtra(ARGS_MOVIE_ID))
     }
 
-    private val adapter = MoviesCastAdapter()
+    private val adapter = ListDelegationAdapter(
+        movieCastHeaderDelegate(),
+        movieCastPersonDelegate()
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMoviesCastBinding.inflate(layoutInflater)
@@ -63,11 +67,12 @@ class MoviesCastActivity : AppCompatActivity() {
         binding.errorMessageTextView.isVisible = false
 
         binding.contentContainer.isVisible = true
-        binding.movieTitle.text = state.movie.fullTitle
 
         // Просто объединяем всех участников
         // в единый список и отображаем
-        adapter.persons = state.movie.directors + state.movie.writers + state.movie.actors + state.movie.others
+        binding.movieTitle.text = state.fullTitle
+
+        adapter.items = state.items
         adapter.notifyDataSetChanged()
     }
 
