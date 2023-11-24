@@ -5,10 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.Router
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.databinding.FragmentAboutBinding
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieDetails
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster.AboutState
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.cast.MoviesCastActivity
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.cast.MoviesCastFragment
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -19,6 +24,8 @@ class AboutFragment: Fragment() {
     }
 
     private lateinit var binding: FragmentAboutBinding
+
+    private val router: Router by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -37,14 +44,29 @@ class AboutFragment: Fragment() {
         }
 
         binding.showCastButton.setOnClickListener {
-            startActivity(
-                MoviesCastActivity.newInstance(
-                    context = requireContext(),
-                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
-                )
-            )
+            findNavController().navigate(R.id.action_moviesFragment_to_detailsFragment,
+                MoviesCastFragment.createArgs(requireArguments().getString(MOVIE_ID).orEmpty()))
+
+//            router.openFragment(
+//                MoviesCastFragment.newInstance(
+//                    movieId = requireArguments().getString(MOVIE_ID).orEmpty()
+//                )
+//            )
         }
-    }
+
+//        binding.showCastButton.setOnClickListener {
+//            parentFragment?.parentFragmentManager?.commit {
+//                replace(
+//                    R.id.rootFragmentContainerView,
+//                    MoviesCastFragment.newInstance(
+//                        movieId = requireArguments().getString(MOVIE_ID).orEmpty()
+//                    ),
+//                    MoviesCastFragment.TAG
+//                )
+//                addToBackStack(MoviesCastFragment.TAG)
+//            }
+        }
+
 
     private fun showErrorMessage(message: String) {
         binding.apply {

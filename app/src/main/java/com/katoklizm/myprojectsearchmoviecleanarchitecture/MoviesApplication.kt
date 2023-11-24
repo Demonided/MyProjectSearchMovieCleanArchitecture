@@ -3,6 +3,7 @@ package com.katoklizm.myprojectsearchmoviecleanarchitecture
 import android.app.Application
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.dataModule
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.interactorModule
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.navigationModule
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.repositoryModule
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.viewModelModule
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesSearchViewModel
@@ -14,7 +15,7 @@ class MoviesApplication: Application() {
         super.onCreate()
         startKoin {
             androidContext(this@MoviesApplication)
-            modules(dataModule, viewModelModule, repositoryModule, interactorModule)
+            modules(dataModule, viewModelModule, repositoryModule, interactorModule, navigationModule)
         }
 
     }
