@@ -2,13 +2,13 @@ package com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.root
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.commit
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.NavigatorHolder
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.NavigatorImpl
+//import androidx.fragment.app.commit
+//import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
+//import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.NavigatorHolder
+//import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.NavigatorImpl
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.databinding.ActivityNewRootBinding
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.MoviesFragment
-import org.koin.android.ext.android.inject
+//import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.MoviesFragment
+//import org.koin.android.ext.android.inject
 
 class NewRootActivity : AppCompatActivity() {
 

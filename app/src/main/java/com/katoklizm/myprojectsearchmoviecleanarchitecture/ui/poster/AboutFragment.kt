@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.Router
+//import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.Router
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.databinding.FragmentAboutBinding
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieDetails
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster.AboutState
@@ -25,7 +25,7 @@ class AboutFragment: Fragment() {
 
     private lateinit var binding: FragmentAboutBinding
 
-    private val router: Router by inject()
+//    private val router: Router by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -44,7 +44,7 @@ class AboutFragment: Fragment() {
         }
 
         binding.showCastButton.setOnClickListener {
-            findNavController().navigate(R.id.action_moviesFragment_to_detailsFragment,
+            findNavController().navigate(R.id.action_detailsFragment_to_moviesCastFragment,
                 MoviesCastFragment.createArgs(requireArguments().getString(MOVIE_ID).orEmpty()))
 
 //            router.openFragment(

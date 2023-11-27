@@ -20,7 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
-import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.Router
+//import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.Router
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.databinding.FragmentMoviesBinding
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesSearchViewModel
@@ -33,7 +33,7 @@ class MoviesFragment : Fragment() {
 
     private val viewModel by viewModel<MoviesSearchViewModel>()
 
-    private val router: Router by inject()
+//    private val router: Router by inject()
 
     private val adapter = MoviesAdapter {movie ->
         if (clickDebounce()) {

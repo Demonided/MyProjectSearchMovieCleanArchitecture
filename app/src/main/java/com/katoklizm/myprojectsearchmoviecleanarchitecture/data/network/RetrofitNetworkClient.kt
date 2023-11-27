@@ -7,6 +7,7 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.NetworkClient
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieCastRequet
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieDetailsRequest
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MoviesSearchRequest
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.NamesSearchRequest
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.Response
 
 class RetrofitNetworkClient(
@@ -19,11 +20,15 @@ class RetrofitNetworkClient(
             return Response().apply { resultCode = -1 }
         }
 
-        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsRequest) && (dto !is MovieCastRequet)) {
+        if ((dto !is MoviesSearchRequest)
+            && (dto !is MovieDetailsRequest)
+            && (dto !is MovieCastRequet)
+            && (dto !is NamesSearchRequest)) {
             return Response().apply { resultCode = 400 }
         }
 
         val response = when (dto) {
+            is NamesSearchRequest -> imdbService.searchName(dto.expression).execute()
             is MoviesSearchRequest -> imdbService.findMovies(dto.expression).execute()
             is MovieCastRequet -> imdbService.getFullCast(dto.movieId).execute()
             else -> imdbService.getMovieDetails((dto as MovieDetailsRequest).movieId).execute()

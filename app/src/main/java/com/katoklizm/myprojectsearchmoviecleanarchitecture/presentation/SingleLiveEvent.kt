@@ -1,6 +1,5 @@
-package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies
+package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation
 
-import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
