@@ -22,18 +22,18 @@ class MoviesCastViewModel(
         stateLiveData.postValue(MoviesCastState.Loading)
 
         // Выполняем сетевой запрос
-        moviesInteractor.getMovieCast(movieId, object : MoviesInteractor.MovieCastConsumer {
-
-            // Обрабатываем результат этого запроса
-            override fun consume(movieCast: MovieCast?, errorMessage: String?) {
-                if (movieCast != null) {
-                    stateLiveData.postValue(castToUiStateContent(movieCast))
-                } else {
-                    stateLiveData.postValue(MoviesCastState.Error(errorMessage ?: "Unknown error"))
-                }
-            }
-
-        })
+//        moviesInteractor.getMovieCast(movieId, object : MoviesInteractor.MovieCastConsumer {
+//
+//            // Обрабатываем результат этого запроса
+//            override fun consume(movieCast: MovieCast?, errorMessage: String?) {
+//                if (movieCast != null) {
+//                    stateLiveData.postValue(castToUiStateContent(movieCast))
+//                } else {
+//                    stateLiveData.postValue(MoviesCastState.Error(errorMessage ?: "Unknown error"))
+//                }
+//            }
+//
+//        })
     }
 
     private fun castToUiStateContent(cast: MovieCast): MoviesCastState {

@@ -1,3 +1,4 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto
 
-data class MovieCastRequet(val movieId: String)
+data class MovieCastRequest(val movieId: String)
+

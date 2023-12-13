@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.MoviesFragment" >
+    android:background="@color/white"
+    tools:context="com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.names.NamesFragment">
 
     <EditText android:id="@+id/queryInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:layout_gravity="center_vertical"
-        android:textColor="@color/white_black"
+        android:textColor="@color/black"
         android:imeOptions="actionDone"
         android:singleLine="true"/>
 
@@ -26,9 +26,11 @@
             android:indeterminateTint="@color/black"
             android:visibility="gone"/>
 
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/locations"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/personsList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            tools:listitem="@layout/list_item_person"/>
 
         <TextView android:id="@+id/placeholderMessage"
             android:layout_width="300dp"

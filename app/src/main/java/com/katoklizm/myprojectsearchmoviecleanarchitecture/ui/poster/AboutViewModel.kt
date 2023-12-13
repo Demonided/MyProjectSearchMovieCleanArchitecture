@@ -16,15 +16,15 @@ class AboutViewModel(
     fun observeState(): LiveData<AboutState> = stateLiveData
 
     init {
-        moviesInteractor.getMoviesDetails(movieId, object : MoviesInteractor.MovieDetailsConsumer {
-            override fun consume(movieDetails: MovieDetails?, errorMessage: String?) {
-                if (movieDetails != null) {
-                    stateLiveData.postValue(AboutState.Content(movieDetails))
-                } else {
-                    stateLiveData.postValue(AboutState.Error(errorMessage ?: "Ошибка сервера"))
-                }
-            }
-
-        })
+//        moviesInteractor.getMoviesDetails(movieId, object : MoviesInteractor.MovieDetailsConsumer {
+//            override fun consume(movieDetails: MovieDetails?, errorMessage: String?) {
+//                if (movieDetails != null) {
+//                    stateLiveData.postValue(AboutState.Content(movieDetails))
+//                } else {
+//                    stateLiveData.postValue(AboutState.Error(errorMessage ?: "Ошибка сервера"))
+//                }
+//            }
+//
+//        })
     }
 }

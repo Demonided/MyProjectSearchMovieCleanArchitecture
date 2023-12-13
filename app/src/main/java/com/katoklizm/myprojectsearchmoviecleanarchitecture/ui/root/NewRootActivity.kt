@@ -2,11 +2,16 @@ package com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.root
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
 //import androidx.fragment.app.commit
 //import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
 //import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.NavigatorHolder
 //import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.NavigatorImpl
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.databinding.ActivityNewRootBinding
+
 //import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.MoviesFragment
 //import org.koin.android.ext.android.inject
 
@@ -28,23 +33,26 @@ class NewRootActivity : AppCompatActivity() {
         binding = ActivityNewRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        if (savedInstanceState == null) {
-//            // Добавляем фрагмент в контейнер
-//            supportFragmentManager.commit {
-//                this.add(R.id.rootFragmentContainerView, MoviesFragment())
-//            }
-//        }
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        binding.bottomNavigationView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.detailsFragment, R.id.moviesCastFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                }
+
+                else -> {
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 
-    // Прикрепляем Navigator к NavigatorHolder
-//    override fun onResume() {
-//        super.onResume()
-//        navigatorHolder.attachNavigator(navigator)
-//    }
-//
-//    // Открепляем Navigator от NavigatorHolder
-//    override fun onPause() {
-//        super.onPause()
-//        navigatorHolder.detachNavigator()
-//    }
+    fun animateBottomNavigationView() {
+        binding.bottomNavigationView.visibility = View.GONE
+    }
 }

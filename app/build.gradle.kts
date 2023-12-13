@@ -69,4 +69,7 @@ dependencies {
     // Подключаем модуль для работы с ViewBinding
     implementation ("com.hannesdorfmann:adapterdelegates4-kotlin-dsl-viewbinding:4.3.2")
 
+    //Подключаем корутины
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+
 }

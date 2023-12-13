@@ -7,11 +7,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 //import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.Creator
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesInteractor
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.SingleLiveEvent
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.models.MoviesState
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.debounce
+import kotlinx.coroutines.launch
 
 class MoviesSearchViewModel(
     private val moviesInteractor: MoviesInteractor
@@ -23,24 +26,13 @@ class MoviesSearchViewModel(
     private val toastState = MutableLiveData<ToastState>(ToastState.None)
     val observeToastState: LiveData<ToastState> = toastState
 
-    private val showToast = SingleLiveEvent<String>()
+    private val showToast = SingleLiveEvent<String?>()
 
     private var view: MoviesView? = null
     private var state: MoviesState? = null
     private var latestSearchText: String? = null
 
 //    private val moviesInteractor = Creator.provideMoviesInteractor(getApplication<Application>())
-
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
-
-//        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-//            initializer {
-//                MoviesSearchViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
-//            }
-//        }
-    }
 
     private val mediatorStateLiveData = MediatorLiveData<MoviesState>().also { liveData ->
         // 1
@@ -80,6 +72,10 @@ class MoviesSearchViewModel(
         updateMoviesContent(movie.id, movie.copy(inFavorite = !movie.inFavorite))
     }
 
+    private val movieSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) { changedText ->
+        searchRequest(changedText)
+    }
+
     private fun updateMoviesContent(movieId: String, newMovie: Movie) {
         val currentState = stateLiveData.value
 
@@ -98,21 +94,25 @@ class MoviesSearchViewModel(
     }
 
     fun searchDebounce(changedText: String) {
-        if (latestSearchText == changedText) {
-            return
+        if (latestSearchText != changedText) {
+            latestSearchText = changedText
+            movieSearchDebounce(changedText)
         }
+//        if (latestSearchText == changedText) {
+//            return
+//        }
 
-        this.lastSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
-        val searchRunnable = Runnable { searchRequest(changedText) }
-
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime
-        )
+//        this.lastSearchText = changedText
+//        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+//
+//        val searchRunnable = Runnable { searchRequest(changedText) }
+//
+//        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
+//        handler.postAtTime(
+//            searchRunnable,
+//            SEARCH_REQUEST_TOKEN,
+//            postTime
+//        )
     }
 
     private fun searchRequest(newSearchText: String) {
@@ -121,46 +121,74 @@ class MoviesSearchViewModel(
                 MoviesState.Loading
             )
 
-            moviesInteractor.searchMovies(
-                newSearchText,
-                object : MoviesInteractor.MoviesConsumer {
-                    override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
+            viewModelScope.launch {
+                moviesInteractor.searchMovies(newSearchText)
+                    .collect { pair ->
 
-                        val movies = mutableListOf<Movie>()
-                        if (foundMovies != null) {
-                            movies.addAll(foundMovies)
-                        }
-
-                        when {
-                            errorMessage != null -> {
-                                renderState(
-                                    MoviesState.Error(
-                                        errorMessage = "dddd"
-                                    ),
-                                )
-
-                                view?.showToast(errorMessage)
-                            }
-
-                            movies.isEmpty() -> {
-                                renderState(
-                                    MoviesState.Empty(
-                                        message = "ssss"
-                                    ),
-                                )
-
-                            }
-
-                            else -> {
-                                renderState(
-                                    MoviesState.Content(
-                                        movies = movies
-                                    )
-                                )
-                            }
-                        }
                     }
-                })
+            }
+
+//            moviesInteractor.searchMovies(
+//                newSearchText,
+//                object : MoviesInteractor.MoviesConsumer {
+//                    override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
+//
+//                        val movies = mutableListOf<Movie>()
+//                        if (foundMovies != null) {
+//                            movies.addAll(foundMovies)
+//                        }
+//
+//                        when {
+//                            errorMessage != null -> {
+//                                renderState(
+//                                    MoviesState.Error(
+//                                        errorMessage = "dddd"
+//                                    ),
+//                                )
+//
+//                                view?.showToast(errorMessage)
+//                            }
+//
+//                            movies.isEmpty() -> {
+//                                renderState(
+//                                    MoviesState.Empty(
+//                                        message = "ssss"
+//                                    ),
+//                                )
+//
+//                            }
+//
+//                            else -> {
+//                                renderState(
+//                                    MoviesState.Content(
+//                                        movies = movies
+//                                    )
+//                                )
+//                            }
+//                        }
+//                    }
+//                })
+        }
+    }
+
+    private fun processResult(foundMovies: List<Movie>?, errorMessage: String?) {
+        val movie = mutableListOf<Movie>()
+
+        if (foundMovies != null) {
+            movie.addAll(foundMovies)
+        }
+
+        when {
+            errorMessage != null -> {
+                renderState(MoviesState.Error("gggg"))
+                showToast.postValue(errorMessage)
+            }
+            movie.isEmpty() -> {
+                renderState(MoviesState.Empty("Empty"))
+            }
+            else -> {
+                renderState(MoviesState.Content(movies = movie))
+            }
         }
     }
 
@@ -172,5 +200,16 @@ class MoviesSearchViewModel(
         toastState.value = ToastState.None
     }
 
-    fun observeShowToast(): LiveData<String> = showToast
+    fun observeShowToast(): LiveData<String?> = showToast
+
+    companion object {
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private val SEARCH_REQUEST_TOKEN = Any()
+
+//        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
+//            initializer {
+//                MoviesSearchViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
+//            }
+//        }
+    }
 }
