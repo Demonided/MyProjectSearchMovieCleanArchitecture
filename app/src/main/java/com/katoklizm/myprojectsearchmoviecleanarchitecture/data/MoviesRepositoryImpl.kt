@@ -26,26 +26,40 @@ class MoviesRepositoryImpl(
         val response = networkClient.doRequest(MoviesSearchRequest(expression))
         when (response.resultCode) {
             -1 -> {
-                Resource.Error("Проверьте подключение интернета")
+                emit(Resource.Error("Проверьте подключение интернета"))
             }
 
             200 -> {
                 val stored = localStorage.getSavedFavorites()
+                with(response as MoviesSearchResponse) {
+                    val data = results.map {
+                        Movie(
+                            id = it.id,
+                            resultType = it.resultType,
+                            image = it.image,
+                            title = it.title,
+                            description = it.description,
+                            inFavorite = stored.contains(it.id)
+                        )
+                    }
+                    emit(Resource.Success(data))
+                }
 
-                Resource.Success((response as MoviesSearchResponse).results.map {
-                    Movie(
-                        id = it.id,
-                        resultType = it.resultType,
-                        image = it.image,
-                        title = it.title,
-                        description = it.description,
-                        inFavorite = stored.contains(it.id)
-                    )
-                })
+
+//                Resource.Success((response as MoviesSearchResponse).results.map {
+//                    Movie(
+//                        id = it.id,
+//                        resultType = it.resultType,
+//                        image = it.image,
+//                        title = it.title,
+//                        description = it.description,
+//                        inFavorite = stored.contains(it.id)
+//                    )
+//                })
             }
 
             else -> {
-                Resource.Error("Серверная ошибка")
+                emit(Resource.Error("Серверная ошибка"))
             }
         }
     }

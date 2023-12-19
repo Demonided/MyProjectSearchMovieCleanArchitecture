@@ -1,10 +1,16 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.cast
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesInteractor
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieCast
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlin.math.log
 
 // В конструктор пробросили необходимые для запроса параметры
 class MoviesCastViewModel(
@@ -12,25 +18,38 @@ class MoviesCastViewModel(
     private val moviesInteractor: MoviesInteractor
 ) : ViewModel() {
 
+    private var searchJob: Job? = null
+
     // Стандартная обвязка для определения State
     // и наблюдения за ним в UI-слое
     private val stateLiveData = MutableLiveData<MoviesCastState>()
     fun observeState(): LiveData<MoviesCastState> = stateLiveData
 
     init {
-        // При старте экрана покажем ProgressBar
-        stateLiveData.postValue(MoviesCastState.Loading)
 
+        viewModelScope.launch {
+            // При старте экрана покажем ProgressBar
+            stateLiveData.postValue(MoviesCastState.Loading)
+
+            try {
+                moviesInteractor.getMovieCast(movieId = movieId).collect {(movieCast, errorMessage) ->
+                    if (movieCast != null) {
+                        stateLiveData.postValue(castToUiStateContent(movieCast))
+                    } else {
+                        stateLiveData.postValue(MoviesCastState.Error(errorMessage ?: "Unknown error"))
+                    }
+                }
+            } catch (e: Throwable) {
+                Log.d("ErrorScope", "Тут я ловлю ошибку ${moviesInteractor.getMovieCast(movieId)}")
+                stateLiveData.postValue(MoviesCastState.Error(""))
+            }
+        }
         // Выполняем сетевой запрос
 //        moviesInteractor.getMovieCast(movieId, object : MoviesInteractor.MovieCastConsumer {
 //
 //            // Обрабатываем результат этого запроса
 //            override fun consume(movieCast: MovieCast?, errorMessage: String?) {
-//                if (movieCast != null) {
-//                    stateLiveData.postValue(castToUiStateContent(movieCast))
-//                } else {
-//                    stateLiveData.postValue(MoviesCastState.Error(errorMessage ?: "Unknown error"))
-//                }
+//
 //            }
 //
 //        })

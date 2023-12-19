@@ -3,6 +3,7 @@ package com.katoklizm.myprojectsearchmoviecleanarchitecture.data.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.NetworkClient
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieCastRequest
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieDetailsRequest
@@ -10,6 +11,7 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MoviesSearch
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.NamesSearchRequest
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.Response
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 class RetrofitNetworkClient(
@@ -22,25 +24,31 @@ class RetrofitNetworkClient(
             return Response().apply { resultCode = -1 }
         }
 
-//        if ((dto !is MoviesSearchRequest)
-//            && (dto !is MovieDetailsRequest)
-//            && (dto !is MovieCastRequest)
-//            && (dto !is NamesSearchRequest)) {
-//            return Response().apply { resultCode = 400 }
-//        }
-
-        if ((dto !is NamesSearchRequest)) {
+        if ((dto !is MoviesSearchRequest)
+            && (dto !is MovieDetailsRequest)
+            && (dto !is MovieCastRequest)
+            && (dto !is NamesSearchRequest)) {
             return Response().apply { resultCode = 400 }
         }
 
+//        if ((dto !is NamesSearchRequest)) {
+//            return Response().apply { resultCode = 400 }
+//        }
+
         return withContext(Dispatchers.IO) {
             try {
-                val response = imdbService.searchName(dto.expression)
+                val response = when (dto) {
+                    is NamesSearchRequest -> async { imdbService.searchName(dto.expression) }
+                    is MoviesSearchRequest -> async { imdbService.findMovies(dto.expression) }
+                    is MovieDetailsRequest -> async { imdbService.getMovieDetails(dto.movieId) }
+                    else -> async { imdbService.getFullCast((dto as MovieCastRequest).movieId) }
+                }.await()
                 response.apply { resultCode = 200 }
             } catch (e: Throwable) {
                 Response().apply { resultCode = 500 }
             }
         }
+
 
 //        val response = when (dto) {
 //            is NamesSearchRequest -> imdbService.searchName(dto.expression).execute()

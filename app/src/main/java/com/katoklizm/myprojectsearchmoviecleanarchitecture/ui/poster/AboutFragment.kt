@@ -5,15 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
 //import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.Router
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.databinding.FragmentAboutBinding
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieDetails
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster.AboutState
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster.AboutViewModel
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.cast.MoviesCastFragment
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 

@@ -14,6 +14,8 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.SingleLiveEvent
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies.models.MoviesState
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.debounce
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MoviesSearchViewModel(
@@ -58,23 +60,25 @@ class MoviesSearchViewModel(
         state?.let { view.render(it) }
     }
 
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-    }
+//    override fun onCleared() {
+//        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+//    }
 
-    fun toggleFavorite(movie: Movie) {
-        if (movie.inFavorite) {
-            moviesInteractor.removeMovieFromFavorites(movie = movie)
-        } else {
-            moviesInteractor.addMovieToFavorites(movie = movie)
-        }
+//    fun toggleFavorite(movie: Movie) {
+//        if (movie.inFavorite) {
+//            moviesInteractor.removeMovieFromFavorites(movie = movie)
+//        } else {
+//            moviesInteractor.addMovieToFavorites(movie = movie)
+//        }
+//
+//        updateMoviesContent(movie.id, movie.copy(inFavorite = !movie.inFavorite))
+//    }
+//
+//    private val movieSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) { changedText ->
+//        searchRequest(changedText)
+//    }
 
-        updateMoviesContent(movie.id, movie.copy(inFavorite = !movie.inFavorite))
-    }
-
-    private val movieSearchDebounce = debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) { changedText ->
-        searchRequest(changedText)
-    }
+    private var searchJob: Job? = null
 
     private fun updateMoviesContent(movieId: String, newMovie: Movie) {
         val currentState = stateLiveData.value
@@ -94,13 +98,22 @@ class MoviesSearchViewModel(
     }
 
     fun searchDebounce(changedText: String) {
-        if (latestSearchText != changedText) {
-            latestSearchText = changedText
-            movieSearchDebounce(changedText)
+        if (latestSearchText == changedText) {
+//            latestSearchText = changedText
+//            movieSearchDebounce(changedText)
+            return
         }
 //        if (latestSearchText == changedText) {
 //            return
 //        }
+
+        latestSearchText = changedText
+
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchRequest(changedText)
+        }
 
 //        this.lastSearchText = changedText
 //        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
@@ -124,7 +137,7 @@ class MoviesSearchViewModel(
             viewModelScope.launch {
                 moviesInteractor.searchMovies(newSearchText)
                     .collect { pair ->
-
+                        processResult(pair.first, pair.second)
                     }
             }
 
