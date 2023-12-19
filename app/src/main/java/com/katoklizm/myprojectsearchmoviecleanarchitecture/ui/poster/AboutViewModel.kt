@@ -1,4 +1,4 @@
-package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster
+package com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.poster
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,9 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.api.MoviesInteractor
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieDetails
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster.AboutState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class AboutViewModel(
     private val movieId: String,
@@ -20,28 +18,18 @@ class AboutViewModel(
     fun observeState(): LiveData<AboutState> = stateLiveData
 
     init {
-
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) {
-                    moviesInteractor.getMoviesDetails(movieId)
-                }.collect { (movieDetails, errorMessage) ->
-                    withContext(Dispatchers.Main) {
+                moviesInteractor.getMoviesDetails(movieId)
+                    .collect { (movieDetails, errorMessage) ->
                         if (movieDetails != null) {
                             stateLiveData.postValue(AboutState.Content(movieDetails))
                         } else {
-                            stateLiveData.postValue(
-                                AboutState.Error(
-                                    errorMessage ?: "Ошибка сервера"
-                                )
-                            )
+                            stateLiveData.postValue(AboutState.Error(errorMessage ?: "Ошибка сервера"))
                         }
                     }
-                }
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    stateLiveData.postValue(AboutState.Error("Ошибка сервера"))
-                }
+                stateLiveData.postValue(AboutState.Error("Ошибка сервера"))
             }
         }
 //        moviesInteractor.getMoviesDetails(movieId, object : MoviesInteractor.MovieDetailsConsumer {

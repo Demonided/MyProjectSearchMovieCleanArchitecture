@@ -1,6 +1,5 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.cast
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,7 +9,6 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.MovieCa
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 // В конструктор пробросили необходимые для запроса параметры
 class MoviesCastViewModel(
@@ -40,7 +38,6 @@ class MoviesCastViewModel(
                     }
                 }
             } catch (e: Throwable) {
-                Log.d("ErrorScope", "Тут я ловлю ошибку ${moviesInteractor.getMovieCast(movieId)}")
                 stateLiveData.postValue(MoviesCastState.Error(""))
             }
         }

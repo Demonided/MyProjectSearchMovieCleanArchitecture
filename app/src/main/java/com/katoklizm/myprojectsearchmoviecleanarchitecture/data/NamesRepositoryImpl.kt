@@ -32,7 +32,7 @@ class NamesRepositoryImpl(private val networkClient: NetworkClient) : NamesRepos
 //        }
 //    }
     override fun searchNames(expression: String): Flow<Resource<List<Person>>> = flow {
-        val response = networkClient.doRequest(NamesSearchRequest(expression))
+        val response = networkClient.doRequestSuspend(NamesSearchRequest(expression))
         when(response.resultCode) {
             1 -> {
                 emit(Resource.Error("Проверьте подключение к интернету"))
