@@ -1,8 +1,10 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.di
 
 import android.content.Context
+import androidx.room.Room
 import com.google.gson.Gson
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.NetworkClient
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.db.AppDatabase
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.movie.LocalStorage
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.network.IMDbApiService
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.network.RetrofitNetworkClient
@@ -31,15 +33,17 @@ val dataModule = module {
 
     factory { Gson() }
 
-//    single<SearchHistoryStorage> {
-//        SharedPreferencesSearchHistoryStorage(get(), get())
-//    }
-
     single<NetworkClient> {
         RetrofitNetworkClient(get(), androidContext())
     }
 
     factory {
         LocalStorage(get())
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+//            .allowMainThreadQueries()
+            .build()
     }
 }

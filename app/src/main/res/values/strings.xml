@@ -2,6 +2,7 @@
     <string name="app_name">MyProjectSearchMovieCleanArchitecture</string>
     <string name="nothing_found">Nothing_Nite</string>
     <string name="something_went_wrong">XxXxX</string>
+    <string name="nothing_searched_yet">nothing_searched_yet</string>
 
     <string name="poster">ПОсТЕР</string>
     <string name="details">О ФИЛЬМЕ</string>

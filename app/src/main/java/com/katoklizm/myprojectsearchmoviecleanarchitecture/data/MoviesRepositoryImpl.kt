@@ -1,10 +1,13 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.data
 
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.converter.MovieCastConverter
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.converter.MovieDbConvertor
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.db.AppDatabase
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieCastRequest
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieCastResponse
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieDetailsRequest
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieDetailsResponse
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MovieDto
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MoviesSearchRequest
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.dto.MoviesSearchResponse
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.movie.LocalStorage
@@ -20,6 +23,8 @@ class MoviesRepositoryImpl(
     private val networkClient: NetworkClient,
     private val localStorage: LocalStorage,
     private val movieCastConverter: MovieCastConverter,
+    private val appDatabase: AppDatabase,
+    private val movieDbConvertor: MovieDbConvertor,
 ) : MoviesRepository {
 
     override fun searchMovies(expression: String): Flow<Resource<List<Movie>>> = flow {
@@ -42,6 +47,7 @@ class MoviesRepositoryImpl(
                             inFavorite = stored.contains(it.id)
                         )
                     }
+                    saveMovie(results)
                     emit(Resource.Success(data))
                 }
 
@@ -116,5 +122,10 @@ class MoviesRepositoryImpl(
 
     override fun removeMovieFromFavorites(movie: Movie) {
         localStorage.removeFromFavorites(moviesId = movie.id)
+    }
+
+    private suspend fun saveMovie(movie: List<MovieDto>) {
+        val movieEntities = movie.map { movie -> movieDbConvertor.map(movie) }
+        appDatabase.movieDao().insertMovies(movieEntities)
     }
 }

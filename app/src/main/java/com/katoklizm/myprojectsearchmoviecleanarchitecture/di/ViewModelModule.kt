@@ -1,6 +1,7 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.di
 
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.cast.MoviesCastViewModel
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.history.HistoryViewModel
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesSearchViewModel
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.names.NamesViewModel
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.poster.PosterViewModel
@@ -29,5 +30,9 @@ val viewModelModule = module {
 
     viewModel {
         NamesViewModel(androidContext(), get())
+    }
+
+    viewModel {
+        HistoryViewModel(androidContext(), get())
     }
 }
