@@ -47,6 +47,7 @@ class MoviesRepositoryImpl(
                             inFavorite = stored.contains(it.id)
                         )
                     }
+                    // Сохраняем список треков в базу данных
                     saveMovie(results)
                     emit(Resource.Success(data))
                 }
@@ -124,8 +125,9 @@ class MoviesRepositoryImpl(
         localStorage.removeFromFavorites(moviesId = movie.id)
     }
 
-    private suspend fun saveMovie(movie: List<MovieDto>) {
-        val movieEntities = movie.map { movie -> movieDbConvertor.map(movie) }
+    // маппим данные из сетевой модели в модель базы данных и сохраняем
+    private suspend fun saveMovie(movies: List<MovieDto>) {
+        val movieEntities = movies.map { movie -> movieDbConvertor.map(movie) }
         appDatabase.movieDao().insertMovies(movieEntities)
     }
 }

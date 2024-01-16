@@ -1,12 +1,10 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.movies
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,13 +13,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.R
-//import com.katoklizm.myprojectsearchmoviecleanarchitecture.core.navigation.Router
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.databinding.FragmentMoviesBinding
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.movies.MoviesSearchViewModel
@@ -31,14 +27,11 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.ui.root.NewRootActivi
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.util.debounce
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
 
     private val viewModel by viewModel<MoviesSearchViewModel>()
-
-//    private val router: Router by inject()
 
     private lateinit var onMovieClickDebounce: (Movie) -> Unit
 
@@ -46,7 +39,8 @@ class MoviesFragment : Fragment() {
 
     private val handler = Handler(Looper.getMainLooper())
 
-    private lateinit var binding: FragmentMoviesBinding
+    private var _binding: FragmentMoviesBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
@@ -60,8 +54,8 @@ class MoviesFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentMoviesBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentMoviesBinding.inflate(inflater, container, false)
         return binding.root
     }
 

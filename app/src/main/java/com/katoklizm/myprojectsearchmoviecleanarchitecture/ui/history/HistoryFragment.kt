@@ -15,9 +15,10 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.domain.models.Movie
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.history.HistoryState
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.presentation.history.HistoryViewModel
 
-class HistoryFragment: Fragment() {
+class HistoryFragment : Fragment() {
 
-    private lateinit var binding: FragmentHistoryBinding
+    private var _binding: FragmentHistoryBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel by viewModels<HistoryViewModel>()
     private var adapter: HistoryAdapter? = null
@@ -30,8 +31,8 @@ class HistoryFragment: Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentHistoryBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentHistoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -44,15 +45,15 @@ class HistoryFragment: Fragment() {
         historyList = binding.historyList
         progressBar = binding.progressBar
 
-        historyList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        historyList.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         historyList.adapter = adapter
 
-        viewModel.fillData()
+//        viewModel.fillData()
 
         viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
-
     }
 
     override fun onDestroyView() {
@@ -62,7 +63,7 @@ class HistoryFragment: Fragment() {
     }
 
     private fun render(state: HistoryState) {
-        when(state) {
+        when (state) {
             is HistoryState.Content -> showContent(state.movies)
             is HistoryState.Empty -> showEmpty(state.message)
             is HistoryState.Loading -> showLoading()

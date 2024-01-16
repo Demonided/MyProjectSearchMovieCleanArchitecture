@@ -1,6 +1,9 @@
 package com.katoklizm.myprojectsearchmoviecleanarchitecture
 
 import android.app.Application
+import androidx.room.Room
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.db.AppDatabase
+import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.db.entity.MovieEntity
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.dataModule
 import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.interactorModule
 //import com.katoklizm.myprojectsearchmoviecleanarchitecture.di.navigationModule
@@ -18,5 +21,16 @@ class MoviesApplication: Application() {
             modules(dataModule, viewModelModule, repositoryModule, interactorModule)
         }
 
+        val database = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "New_movies.db")
+            .allowMainThreadQueries()
+            .build()
+
+        val movieEntityList = listOf(
+            MovieEntity("232", "РРыв", "234ав", "15ка", "12321ув1", false),
+            MovieEntity("232", "РРыв", "234ав", "15ка", "12321ув1", false),
+            // ... добавьте другие сущности
+        )
+
+        database.movieDao().insertMovies(movieEntityList)
     }
 }

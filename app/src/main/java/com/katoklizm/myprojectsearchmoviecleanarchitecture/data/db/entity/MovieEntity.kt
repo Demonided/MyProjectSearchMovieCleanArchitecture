@@ -3,7 +3,6 @@ package com.katoklizm.myprojectsearchmoviecleanarchitecture.data.db.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
 @Entity(tableName = "movie_table")
 data class MovieEntity(
     @PrimaryKey
@@ -11,5 +10,6 @@ data class MovieEntity(
     val resultType: String,
     val image: String,
     val title: String,
-    val description: String
+    val description: String,
+    val isFavorite: Boolean
 )
