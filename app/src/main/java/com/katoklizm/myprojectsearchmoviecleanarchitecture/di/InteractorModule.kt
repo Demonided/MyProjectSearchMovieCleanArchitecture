@@ -21,4 +21,6 @@ val interactorModule = module {
     single<HistoryInteractor> {
         HistoryInteractorImpl(get())
     }
+
+
 }

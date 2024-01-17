@@ -49,7 +49,7 @@ class HistoryFragment : Fragment() {
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         historyList.adapter = adapter
 
-//        viewModel.fillData()
+        viewModel.fillData()
 
         viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)

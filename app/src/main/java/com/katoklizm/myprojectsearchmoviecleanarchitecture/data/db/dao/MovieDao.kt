@@ -10,7 +10,7 @@ import com.katoklizm.myprojectsearchmoviecleanarchitecture.data.db.entity.MovieE
 interface MovieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovies(movies: List<MovieEntity>)
+    suspend fun insertMovies(movies: List<MovieEntity>)
 
     @Query("SELECT * FROM movie_table")
     suspend fun getMovies(): List<MovieEntity>

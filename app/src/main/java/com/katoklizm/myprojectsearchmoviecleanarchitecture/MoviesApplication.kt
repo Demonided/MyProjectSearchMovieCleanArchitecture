@@ -31,6 +31,6 @@ class MoviesApplication: Application() {
             // ... добавьте другие сущности
         )
 
-        database.movieDao().insertMovies(movieEntityList)
+//        database.movieDao().insertMovies(movieEntityList)
     }
 }
